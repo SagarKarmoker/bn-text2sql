@@ -1,0 +1,1335 @@
+Dataset already exists at /home/sagar/Downloads/MSc/CSE505/Project/dataset
+[OK] cell  3 (0s)
+device      : cpu
+project root: /home/sagar/Downloads/MSc/CSE505/Project
+SAMPLE_N    : 10
+[OK] cell  5 (1s)
+train rows: 7,000   dbs: 140   cols: 13
+schema registry: 166 dbs | tables 876 | columns 4,503 | FK pairs 795
+[OK] cell  7 (1s)
+validation rows: 1,034   dbs: 20
+overlap with train dbs: 0 (expect 0)
+validation dbs missing from tables.json: 0 []
+validation dbs missing sqlite file     : 0 []
+  bn         identical-to-EN rows: 0
+  banglish   identical-to-EN rows: 0
+  code_mixed identical-to-EN rows: 0
+[OK] cell  8 (1s)
+dbs with usable Bangla glosses: 160 / 160
+[OK] cell 10 (2s)
+en chunks: 876   bilingual chunks: 876
+[OK] cell 12 (2s)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|██████████| 391/391 [00:00<00:00, 40512.16it/s]
+Model loaded: BAAI/bge-m3 (dim=1024)
+[OK] cell 14 (12s)
+schema_en: already indexed (876 chunks), skipping
+schema_bn: already indexed (876 chunks), skipping
+collection counts: 876 en / 876 bn
+[OK] cell 16 (13s)
+demo question (concert_singer):
+আমাদের কতজন গায়ক আছে?
+
+            table  score
+           singer 0.4124
+singer_in_concert 0.3880
+          concert 0.3648
+[OK] cell 18 (13s)
+You are an expert SQLite text-to-SQL system.
+
+Your task is to convert the user's question into exactly one valid SQLite SQL query.
+
+You MUST follow these rules:
+
+1. Use ONLY tables and columns explicitly present in the schema. Never invent names, relationships, or functions.
+2. Use SQLite-compatible SQL only.
+3. Return ONLY the SQL query - no explanations, comments, markdown, or code fences.
+
+Value handling (string comparisons in SQLite are case-sensitive: 'Haiti' != 'haiti'):
+4. For string literals, use the form STORED in the database, not the form displayed in the question.
+   - If the schema shows sample values, copy the stored value verbatim (e.g. use 'haiti' if the sample shows 'haiti', even though the question says "Haiti").
+   - If no sample value is shown and the case is uncertain, prefer lowercase.
+5. Preserve numeric values from the question exactly as written.
+
+Query construction:
+6. Use JOIN conditions ONLY on relationships supported by the schema (foreign keys).
+7. Filtering -> WHERE; aggregation (COUNT/SUM/AVG/MIN/MAX) -> GROUP BY when needed; highest/lowest -> ORDER BY ... LIMIT 1; a specific number of results -> LIMIT N; distinct values -> DISTINCT.
+8. For percentage/ratio/average, construct the calculation carefully and avoid integer division (e.g. CAST(x AS REAL)).
+9. When mixing AND and OR, use parentheses to make precedence explicit.
+10. Do not add unnecessary tables, joins, filters, grouping, or ordering; prefer simple SQL.
+11. Qualify ambiguous column na
+[OK] cell 20 (13s)
+LLM ready: oc/hy3-free via http://localhost:20128/v1
+[OK] cell 22 (13s)
+gold SQL ok: True | rows: 1
+[OK] cell 24 (14s)
+[OK] cell 25 (14s)
+1) dup/DISTINCT                    exec_match=False (expect False)  PASS  valid=True
+2) numeric literal                 exec_match=True (expect True)  PASS  valid=True
+3) row order                       exec_match=False (expect False)  PASS  valid=True
+4) value case                      exec_match=False (expect False)  PASS  valid=True
+5) parse failure                   exec_match=False (expect False)  PASS  valid=False
+
+EM self-equal          : True (expect True)
+EM different column    : False (expect False)
+EM alias-equivalent    : True (expect True)
+EM different operator  : False (expect False)
+EM different shape     : False (expect False)
+
+EM gold==gold      : True (expect True)
+[OK] cell 27 (14s)
+Phase 1 sample: 50 questions | 20 dbs
+
+--- Starting Phase 1: Evaluating all configs on English ---
+Phase 1 (EN):   0%|          | 0/50 [00:00<?, ?it/s]Phase 1 (EN):   2%|▏         | 1/50 [02:43<2:13:19, 163.25s/it]Phase 1 (EN):   4%|▍         | 2/50 [05:11<2:03:29, 154.37s/it]Phase 1 (EN):   6%|▌         | 3/50 [07:24<1:53:12, 144.53s/it]Phase 1 (EN):   8%|▊         | 4/50 [10:34<2:04:48, 162.79s/it]Phase 1 (EN):  10%|█         | 5/50 [12:17<1:45:44, 140.98s/it]Phase 1 (EN):  12%|█▏        | 6/50 [14:12<1:36:53, 132.12s/it]Phase 1 (EN):  14%|█▍        | 7/50 [15:26<1:21:04, 113.13s/it]Phase 1 (EN):  16%|█▌        | 8/50 [17:02<1:15:20, 107.62s/it]Phase 1 (EN):  18%|█▊        | 9/50 [19:47<1:25:58, 125.83s/it]Phase 1 (EN):  20%|██        | 10/50 [21:39<1:20:52, 121.31s/it]
+[MISMATCH] QID: 10000584
+Gold: select t1.first_name from students as t1 join addresses as t2 on t1.permanent_address_id  =  t2.address_id where t2.country  =  'haiti' or t1.cell_mobile_number  =  '09700166582'
+Pred: SELECT Students.first_name FROM Students LEFT JOIN Addresses ON Students.permanent_address_id = Addresses.address_id WHERE (Addresses.country = 'haiti' OR Students.cell_mobile_number = '09700166582');
+Error: 
+
+[MISMATCH] QID: 10000584
+Gold: select t1.first_name from students as t1 join addresses as t2 on t1.permanent_address_id  =  t2.address_id where t2.country  =  'haiti' or t1.cell_mobile_number  =  '09700166582'
+Pred: SELECT s.first_name FROM Students s LEFT JOIN Addresses a ON s.permanent_address_id = a.address_id WHERE a.country = 'haiti' OR s.cell_mobile_number = '09700166582';
+Error: 
+
+[MISMATCH] QID: 10000584
+Gold: select t1.first_name from students as t1 join addresses as t2 on t1.permanent_address_id  =  t2.address_id where t2.country  =  'haiti' or t1.cell_mobile_number  =  '09700166582'
+Pred: SELECT s.first_name FROM Students s LEFT JOIN Addresses a ON s.permanent_address_id = a.address_id WHERE a.country = 'Haiti' OR s.cell_mobile_number = '09700166582';
+Error: 
+
+[MISMATCH] QID: 10000917
+Gold: SELECT min(grade) FROM Highschooler WHERE id NOT IN (SELECT T1.student_id FROM Friend AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id)
+Pred: SELECT MIN(grade) FROM Highschooler WHERE ID NOT IN (SELECT student_id FROM Friend UNION SELECT friend_id FROM Friend);
+Error: 
+
+[MISMATCH] QID: 10000258
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportCode FROM airports WHERE NOT EXISTS (SELECT 1 FROM flights WHERE SourceAirport = airports.AirportCode OR DestAirport = airports.AirportCode)
+Error: 
+
+[MISMATCH] QID: 10000258
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportCode FROM airports WHERE NOT EXISTS (SELECT 1 FROM flights WHERE SourceAirport = airports.AirportCode) AND NOT EXISTS (SELECT 1 FROM flights WHERE DestAirport = airports.AirportCode)
+Error: 
+
+[MISMATCH] QID: 10000258
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportCode FROM airports WHERE NOT EXISTS (SELECT 1 FROM flights WHERE SourceAirport = airports.AirportCode) AND NOT EXISTS (SELECT 1 FROM flights WHERE DestAirport = airports.AirportCode);
+Error: 
+
+[MISMATCH] QID: 10000258
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportCode FROM airports WHERE NOT EXISTS (SELECT 1 FROM flights WHERE SourceAirport = airports.AirportCode OR DestAirport = airports.AirportCode)
+Error: 
+
+[MISMATCH] QID: 10000258
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportCode FROM airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM flights UNION SELECT DestAirport FROM flights);
+Error: 
+
+[MISMATCH] QID: 10000258
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportCode FROM airports a WHERE NOT EXISTS (SELECT 1 FROM flights f WHERE f.SourceAirport = a.AirportCode) AND NOT EXISTS (SELECT 1 FROM flights f WHERE f.DestAirport = a.AirportCode)
+Error: 
+
+[MISMATCH] QID: 10000258
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportCode FROM airports WHERE NOT EXISTS (SELECT 1 FROM flights WHERE flights.SourceAirport = airports.AirportCode) AND NOT EXISTS (SELECT 1 FROM flights WHERE flights.DestAirport = airports.AirportCode);
+Error: 
+
+[MISMATCH] QID: 10000258
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportCode FROM airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM flights UNION SELECT DestAirport FROM flights);
+Error: 
+
+[MISMATCH] QID: 10000258
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportCode FROM airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM flights UNION SELECT DestAirport FROM flights)
+Error: 
+
+API Error: Error code: 503 - {'error': {'message': '[503]: {"error":{"type":"server_error","message":"Error from provider (Console): Upstream request failed: Endpoint is unavailable."}}', 'type': 'server_error', 'code': 'service_unavailable'}}
+Skipping due to error: Error code: 503 - {'error': {'message': '[503]: {"error":{"type":"server_error","message":"Error from provider (Console): Upstream request failed: Endpoint is unavailable."}}', 'type': 'server_error', 'code': 'service_unavailable'}}
+
+API Error: Error code: 503 - {'error': {'message': '[503]: {"error":{"type":"server_error","message":"Error from provider (Console): Upstream request failed: Endpoint is unavailable."}}', 'type': 'server_error', 'code': 'service_unavailable'}}
+Skipping due to error: Error code: 503 - {'error': {'message': '[503]: {"error":{"type":"server_error","message":"Error from provider (Console): Upstream request failed: Endpoint is unavailable."}}', 'type': 'server_error', 'code': 'service_unavailable'}}
+
+API Error: Error code: 503 - {'error': {'message': '[503]: {"error":{"type":"server_error","message":"Error from provider (Console): Upstream request failed: Endpoint is unavailable."}}', 'type': 'server_error', 'code': 'service_unavailable'}}
+Skipping due to error: Error code: 503 - {'error': {'message': '[503]: {"error":{"type":"server_error","message":"Error from provider (Console): Upstream request failed: Endpoint is unavailable."}}', 'type': 'server_error', 'code': 'service_unavailable'}}
+
+[MISMATCH] QID: 10000490
+Gold: SELECT count(*) ,  hand FROM players GROUP BY hand
+Pred: SELECT hand, COUNT(player_id) FROM players GROUP BY hand;
+Error: 
+
+[MISMATCH] QID: 10000410
+Gold: SELECT Name FROM teacher WHERE Teacher_id NOT IN (SELECT Teacher_id FROM course_arrange)
+Pred: SELECT Name FROM teacher WHERE NOT EXISTS (SELECT 1 FROM course_arrange WHERE Teacher_ID = teacher.Teacher_ID);
+Error: 
+
+[MISMATCH] QID: 10000410
+Gold: SELECT Name FROM teacher WHERE Teacher_id NOT IN (SELECT Teacher_id FROM course_arrange)
+Pred: SELECT t.Name FROM teacher t LEFT JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID WHERE ca.Teacher_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000410
+Gold: SELECT Name FROM teacher WHERE Teacher_id NOT IN (SELECT Teacher_id FROM course_arrange)
+Pred: SELECT t.Name FROM teacher t LEFT JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID WHERE ca.Teacher_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000646
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT Package_Option FROM TV_Channel AS T WHERE NOT EXISTS (SELECT 1 FROM Cartoon AS C WHERE C.Channel = T.series_name AND C.Directed_by = 'ben jones');
+Error: 
+
+[MISMATCH] QID: 10000646
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT DISTINCT Package_Option FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'ben jones');
+Error: 
+
+[MISMATCH] QID: 10000646
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT DISTINCT Package_Option FROM TV_Channel t WHERE NOT EXISTS (SELECT 1 FROM Cartoon c WHERE c.Channel = t.id AND c.Directed_by = 'ben jones')
+Error: 
+
+[MISMATCH] QID: 10000646
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT DISTINCT Package_Option FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'ben jones');
+Error: Phase 1 (EN):  22%|██▏       | 11/50 [25:14<1:37:37, 150.18s/it]Phase 1 (EN):  24%|██▍       | 12/50 [27:14<1:29:17, 140.99s/it]Phase 1 (EN):  26%|██▌       | 13/50 [29:39<1:27:43, 142.27s/it]
+
+[MISMATCH] QID: 10000646
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT DISTINCT Package_Option FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'ben jones');
+Error: 
+
+[MISMATCH] QID: 10000646
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT DISTINCT Package_Option FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'ben jones');
+Error: 
+
+[MISMATCH] QID: 10000646
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT DISTINCT Package_Option FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'Ben Jones');
+Error: 
+
+[MISMATCH] QID: 10000999
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description FROM Professionals p JOIN Treatments t ON p.professional_id = t.professional_id JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000999
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description FROM Professionals p JOIN Treatments t ON p.professional_id = t.professional_id JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000999
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description FROM Professionals p JOIN Treatments t ON p.professional_id = t.professional_id JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000999
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description
+FROM Professionals p
+JOIN Treatments t ON p.professional_id = t.professional_id
+JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000999
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description FROM Professionals p JOIN Treatments t ON p.professional_id = t.professional_id JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000999
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description
+FROM Professionals p
+JOIN Treatments t ON p.professional_id = t.professional_id
+JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000999
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT Professionals.first_name, Treatment_Types.treatment_type_description FROM Professionals JOIN Treatments ON Professionals.professional_id = Treatments.professional_id JOIN Treatment_Types ON Treatments.treatment_type_code = Treatment_Types.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000086
+Gold: select avg(age) from student where stuid not in (select stuid from has_pet)
+Pred: SELECT AVG(Age) FROM Student WHERE NOT EXISTS (SELECT 1 FROM Has_Pet WHERE Has_Pet.StuID = Student.StuID);
+Error: 
+
+[MISMATCH] QID: 10000086
+Gold: select avg(age) from student where stuid not in (select stuid from has_pet)
+Pred: SELECT AVG(Age) FROM Student WHERE NOT EXISTS (SELECT 1 FROM Has_Pet WHERE Has_Pet.StuID = Student.StuID);
+Error: 
+
+[MISMATCH] QID: 10000086
+Gold: select avg(age) from student where stuid not in (select stuid from has_pet)
+Pred: SELECT AVG(Age) FROM Student WHERE NOT EXISTS (SELECT 1 FROM Has_Pet WHERE Has_Pet.StuID = Student.StuID);
+Error: 
+
+[MISMATCH] QID: 10000086
+Gold: select avg(age) from student where stuid not in (select stuid from has_pet)
+Pred: SELECT AVG(Age) FROM Student WHERE NOT EXISTS (SELECT 1 FROM Has_Pet WHERE Has_Pet.StuID = Student.StuID);
+Error: 
+
+[MISMATCH] QID: 10000086
+Gold: select avg(age) from student where stuid not in (select stuid from has_pet)
+Pred: SELECT AVG(Age) FROM Student WHERE NOT EXISTS (SELECT 1 FROM Has_Pet WHERE Has_Pet.StuID = Student.StuID);
+Error: 
+
+[MISMATCH] QID: 10000821
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage c2 WHERE c2.CountryCode = countrylanguage.CountryCode);
+Error: 
+
+[MISMATCH] QID: 10000821
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage AS c2 WHERE c2.CountryCode = countrylanguage.CountryCode);
+Error: 
+
+[MISMATCH] QID: 10000821
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage c1 WHERE Language='spanish' AND NOT EXISTS (SELECT 1 FROM countrylanguage c2 WHERE c2.CountryCode=c1.CountryCode AND c2.Percentage>c1.Percentage);
+Error: 
+
+[MISMATCH] QID: 10000821
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage AS l2 WHERE l2.CountryCode = countrylanguage.CountryCode);
+Error: 
+
+[MISMATCH] QID: 10000821
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage AS c2 WHERE c2.CountryCode = countrylanguage.CountryCode);
+Error: 
+
+[MISMATCH] QID: 10000821
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage c2 WHERE c2.CountryCode = countrylanguage.CountryCode);
+Error: 
+
+[MISMATCH] QID: 10000821
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'Spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage c2 WHERE c2.CountryCode = countrylanguage.CountryCode);
+Error: 
+
+[MISMATCH] QID: 10000821
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language='Spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage AS c WHERE c.CountryCode = countrylanguage.CountryCode);
+Error: Phase 1 (EN):  28%|██▊       | 14/50 [32:16<1:27:59, 146.65s/it]Phase 1 (EN):  30%|███       | 15/50 [35:23<1:32:32, 158.63s/it]Phase 1 (EN):  32%|███▏      | 16/50 [38:22<1:33:24, 164.84s/it]Phase 1 (EN):  34%|███▍      | 17/50 [40:14<1:21:56, 149.00s/it]Phase 1 (EN):  36%|███▌      | 18/50 [46:08<1:52:22, 210.71s/it]Phase 1 (EN):  38%|███▊      | 19/50 [49:13<1:44:51, 202.94s/it]Phase 1 (EN):  40%|████      | 20/50 [50:51<1:25:43, 171.45s/it]
+
+[MISMATCH] QID: 10000821
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language='Spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage c2 WHERE c2.CountryCode = countrylanguage.CountryCode);
+Error: 
+
+[MISMATCH] QID: 10000380
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text = 'brazil' INTERSECT SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text = 'ireland';
+Error: 
+
+[MISMATCH] QID: 10000380
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text = 'brazil' INTERSECT SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text = 'ireland'
+Error: 
+
+[MISMATCH] QID: 10000380
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text IN ('brazil','ireland') GROUP BY Document_ID HAVING COUNT(DISTINCT Paragraph_Text)=2;
+Error: 
+
+API Error: Error code: 500 - {'error': {'message': '[500]: {"type":"error","error":{"type":"error","message":"Internal server error"}}', 'type': 'server_error', 'code': 'internal_server_error'}}
+Skipping due to error: Error code: 500 - {'error': {'message': '[500]: {"type":"error","error":{"type":"error","message":"Internal server error"}}', 'type': 'server_error', 'code': 'internal_server_error'}}
+
+[MISMATCH] QID: 10001033
+Gold: SELECT property_name FROM Properties WHERE property_type_code  =  "House" UNION SELECT property_name FROM Properties WHERE property_type_code  =  "Apartment" AND room_count  >  1
+Pred: SELECT property_name FROM Properties WHERE property_type_code IN ('hse','apt') AND room_count > 1;
+Error: 
+
+[MISMATCH] QID: 10001033
+Gold: SELECT property_name FROM Properties WHERE property_type_code  =  "House" UNION SELECT property_name FROM Properties WHERE property_type_code  =  "Apartment" AND room_count  >  1
+Pred: SELECT p.property_name FROM Properties p JOIN Ref_Property_Types t ON p.property_type_code = t.property_type_code WHERE t.property_type_description IN ('house','apartment') AND p.room_count > 1
+Error: 
+
+[MISMATCH] QID: 10001033
+Gold: SELECT property_name FROM Properties WHERE property_type_code  =  "House" UNION SELECT property_name FROM Properties WHERE property_type_code  =  "Apartment" AND room_count  >  1
+Pred: SELECT p.property_name FROM Properties p JOIN Ref_Property_Types r ON p.property_type_code = r.property_type_code WHERE LOWER(r.property_type_description) IN ('house','apartment') AND p.room_count > 1;
+Error: 
+
+[MISMATCH] QID: 10001033
+Gold: SELECT property_name FROM Properties WHERE property_type_code  =  "House" UNION SELECT property_name FROM Properties WHERE property_type_code  =  "Apartment" AND room_count  >  1
+Pred: SELECT property_name FROM Properties WHERE property_type_code IN ('apt','hse') AND room_count > 1;
+Error: 
+
+[MISMATCH] QID: 10001033
+Gold: SELECT property_name FROM Properties WHERE property_type_code  =  "House" UNION SELECT property_name FROM Properties WHERE property_type_code  =  "Apartment" AND room_count  >  1
+Pred: SELECT p.property_name FROM Properties p JOIN Ref_Property_Types r ON p.property_type_code = r.property_type_code WHERE r.property_type_description IN ('house','apartment') AND p.room_count > 1;
+Error: 
+
+[MISMATCH] QID: 10001033
+Gold: SELECT property_name FROM Properties WHERE property_type_code  =  "House" UNION SELECT property_name FROM Properties WHERE property_type_code  =  "Apartment" AND room_count  >  1
+Pred: SELECT Properties.property_name
+FROM Properties
+JOIN Ref_Property_Types ON Properties.property_type_code = Ref_Property_Types.property_type_code
+WHERE Ref_Property_Types.property_type_description IN ('house','apartment')
+AND Properties.room_count > 1;
+Error: 
+
+[MISMATCH] QID: 10001033
+Gold: SELECT property_name FROM Properties WHERE property_type_code  =  "House" UNION SELECT property_name FROM Properties WHERE property_type_code  =  "Apartment" AND room_count  >  1
+Pred: SELECT property_name FROM Properties WHERE (property_type_code = 'House' OR property_type_code = 'Apartment') AND room_count > 1;
+Error: 
+
+[MISMATCH] QID: 10001033
+Gold: SELECT property_name FROM Properties WHERE property_type_code  =  "House" UNION SELECT property_name FROM Properties WHERE property_type_code  =  "Apartment" AND room_count  >  1
+Pred: SELECT p.property_name FROM Properties p JOIN Ref_Property_Types r ON p.property_type_code = r.property_type_code WHERE r.property_type_description IN ('house','apartment') AND p.room_count > 1;
+Error: 
+
+[MISMATCH] QID: 10001033
+Gold: SELECT property_name FROM Properties WHERE property_type_code  =  "House" UNION SELECT property_name FROM Properties WHERE property_type_code  =  "Apartment" AND room_count  >  1
+Pred: SELECT p.property_name FROM Properties p JOIN Ref_Property_Types r ON p.property_type_code = r.property_type_code WHERE r.property_type_description IN ('house','apartment') AND p.room_count > 1;
+Error: 
+
+[MISMATCH] QID: 10000428
+Gold: SELECT count(*) FROM museum WHERE open_year  >  2013 OR open_year  <  2008
+Pred: SELECT COUNT(*) FROM museum WHERE (Open_Year > '2013' OR Open_Year < '2008');
+Error: 
+
+[MISMATCH] QID: 10000428
+Gold: SELECT count(*) FROM museum WHERE open_year  >  2013 OR open_year  <  2008
+Pred: SELECT COUNT(*) FROM museum WHERE CAST(Open_Year AS INTEGER) > 2013 OR CAST(Open_Year AS INTEGER) < 2008;
+Error: 
+
+[MISMATCH] QID: 10000428
+Gold: SELECT count(*) FROM museum WHERE open_year  >  2013 OR open_year  <  2008
+Pred: SELECT COUNT(*) FROM museum WHERE (Open_Year > '2013' OR Open_Year < '2008');
+Error: 
+
+[MISMATCH] QID: 10000583
+Gold: select t1.first_name from students as t1 join addresses as t2 on t1.permanent_address_id  =  t2.address_id where t2.country  =  'haiti' or t1.cell_mobile_number  =  '09700166582'
+Pred: SELECT Students.first_name FROM Students LEFT JOIN Addresses ON Students.permanent_address_id = Addresses.address_id WHERE (Addresses.country = 'haiti' OR Students.cell_mobile_number = '09700166582');
+Error: 
+
+[MISMATCH] QID: 10000583
+Gold: select t1.first_name from students as t1 join addresses as t2 on t1.permanent_address_id  =  t2.address_id where t2.country  =  'haiti' or t1.cell_mobile_number  =  '09700166582'
+Pred: SELECT s.first_name FROM Students s LEFT JOIN Addresses a ON s.permanent_address_id = a.address_id WHERE a.country = 'haiti' OR s.cell_mobile_number = '09700166582';
+Error: 
+
+[MISMATCH] QID: 10000583
+Gold: select t1.first_name from students as t1 join addresses as t2 on t1.permanent_address_id  =  t2.address_id where t2.country  =  'haiti' or t1.cell_mobile_number  =  '09700166582'
+Pred: SELECT first_name FROM Students WHERE permanent_address_id IN (SELECT address_id FROM Addresses WHERE country='haiti') OR cell_mobile_number='09700166582'
+Error: 
+
+[MISMATCH] QID: 10000583
+Gold: select t1.first_name from students as t1 join addresses as t2 on t1.permanent_address_id  =  t2.address_id where t2.country  =  'haiti' or t1.cell_mobile_number  =  '09700166582'
+Pred: SELECT s.first_name FROM Students s LEFT JOIN Addresses a ON s.permanent_address_id = a.address_id WHERE a.country = 'haiti' OR s.cell_mobile_number = '09700166582';
+Error: 
+
+[MISMATCH] QID: 10000583
+Gold: select t1.first_name from students as t1 join addresses as t2 on t1.permanent_address_id  =  t2.address_id where t2.country  =  'haiti' or t1.cell_mobile_number  =  '09700166582'
+Pred: SELECT first_name FROM Students WHERE cell_mobile_number = '09700166582' OR permanent_address_id IN (SELECT address_id FROM Addresses WHERE country = 'Haiti');
+Error: 
+
+[MISMATCH] QID: 10000583
+Gold: select t1.first_name from students as t1 join addresses as t2 on t1.permanent_address_id  =  t2.address_id where t2.country  =  'haiti' or t1.cell_mobile_number  =  '09700166582'
+Pred: SELECT first_name FROM Students WHERE permanent_address_id IN (SELECT address_id FROM Addresses WHERE country = 'Haiti') OR cell_mobile_number = '09700166582'
+Error: Phase 1 (EN):  42%|████▏     | 21/50 [53:23<1:20:03, 165.64s/it]Phase 1 (EN):  44%|████▍     | 22/50 [55:42<1:13:31, 157.57s/it]Phase 1 (EN):  46%|████▌     | 23/50 [58:15<1:10:18, 156.25s/it]Phase 1 (EN):  48%|████▊     | 24/50 [1:00:40<1:06:09, 152.69s/it]Phase 1 (EN):  50%|█████     | 25/50 [1:01:36<51:36, 123.86s/it]  Phase 1 (EN):  52%|█████▏    | 26/50 [1:03:55<51:16, 128.18s/it]Phase 1 (EN):  54%|█████▍    | 27/50 [1:05:21<44:18, 115.58s/it]Phase 1 (EN):  56%|█████▌    | 28/50 [1:06:25<36:45, 100.24s/it]Phase 1 (EN):  58%|█████▊    | 29/50 [1:08:30<37:42, 107.73s/it]
+
+[MISMATCH] QID: 10000916
+Gold: SELECT min(grade) FROM Highschooler WHERE id NOT IN (SELECT T1.student_id FROM Friend AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id)
+Pred: SELECT MIN(grade) FROM Highschooler WHERE ID NOT IN (SELECT student_id FROM Friend UNION SELECT friend_id FROM Friend);
+Error: 
+
+[MISMATCH] QID: 10000916
+Gold: SELECT min(grade) FROM Highschooler WHERE id NOT IN (SELECT T1.student_id FROM Friend AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id)
+Pred: SELECT MIN(grade) FROM Highschooler WHERE ID NOT IN (SELECT student_id FROM Friend) AND ID NOT IN (SELECT friend_id FROM Friend);
+Error: 
+
+[MISMATCH] QID: 10000257
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportName FROM airports A WHERE NOT EXISTS (SELECT 1 FROM flights F WHERE F.SourceAirport = A.AirportCode OR F.DestAirport = A.AirportCode);
+Error: 
+
+[MISMATCH] QID: 10000257
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportName FROM airports WHERE NOT EXISTS (SELECT 1 FROM flights WHERE SourceAirport = airports.AirportCode OR DestAirport = airports.AirportCode);
+Error: 
+
+[MISMATCH] QID: 10000257
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportName FROM airports a WHERE NOT EXISTS (SELECT 1 FROM flights f WHERE f.SourceAirport = a.AirportCode) AND NOT EXISTS (SELECT 1 FROM flights f WHERE f.DestAirport = a.AirportCode)
+Error: 
+
+[MISMATCH] QID: 10000257
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportName FROM airports a WHERE NOT EXISTS (SELECT 1 FROM flights f WHERE f.SourceAirport = a.AirportCode OR f.DestAirport = a.AirportCode);
+Error: 
+
+[MISMATCH] QID: 10000257
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportName FROM airports WHERE NOT EXISTS (SELECT 1 FROM flights WHERE SourceAirport = airports.AirportCode) AND NOT EXISTS (SELECT 1 FROM flights WHERE DestAirport = airports.AirportCode);
+Error: 
+
+[MISMATCH] QID: 10000257
+Gold: SELECT AirportName FROM Airports WHERE AirportCode NOT IN (SELECT SourceAirport FROM Flights UNION SELECT DestAirport FROM Flights)
+Pred: SELECT AirportName FROM airports WHERE NOT EXISTS (SELECT 1 FROM flights WHERE SourceAirport = airports.AirportCode OR DestAirport = airports.AirportCode);
+Error: 
+
+[MISMATCH] QID: 10000489
+Gold: SELECT count(*) ,  hand FROM players GROUP BY hand
+Pred: SELECT hand, COUNT(player_id) FROM players GROUP BY hand;
+Error: 
+
+[MISMATCH] QID: 10000489
+Gold: SELECT count(*) ,  hand FROM players GROUP BY hand
+Pred: SELECT hand, COUNT(player_id) FROM players GROUP BY hand;
+Error: 
+
+[MISMATCH] QID: 10000409
+Gold: SELECT Name FROM teacher WHERE Teacher_id NOT IN (SELECT Teacher_id FROM course_arrange)
+Pred: SELECT t.Name FROM teacher t LEFT JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID WHERE ca.Teacher_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000409
+Gold: SELECT Name FROM teacher WHERE Teacher_id NOT IN (SELECT Teacher_id FROM course_arrange)
+Pred: SELECT t.Name FROM teacher t LEFT JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID WHERE ca.Teacher_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000409
+Gold: SELECT Name FROM teacher WHERE Teacher_id NOT IN (SELECT Teacher_id FROM course_arrange)
+Pred: SELECT t.Name FROM teacher t LEFT JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID WHERE ca.Teacher_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000409
+Gold: SELECT Name FROM teacher WHERE Teacher_id NOT IN (SELECT Teacher_id FROM course_arrange)
+Pred: SELECT t.Name FROM teacher t LEFT JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID WHERE ca.Teacher_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000409
+Gold: SELECT Name FROM teacher WHERE Teacher_id NOT IN (SELECT Teacher_id FROM course_arrange)
+Pred: SELECT t.Name FROM teacher t LEFT JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID WHERE ca.Teacher_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000409
+Gold: SELECT Name FROM teacher WHERE Teacher_id NOT IN (SELECT Teacher_id FROM course_arrange)
+Pred: SELECT t.Name FROM teacher t LEFT JOIN course_arrange ca ON t.Teacher_ID = ca.Teacher_ID WHERE ca.Teacher_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000505
+Gold: SELECT name ,  RESULT ,  bulgarian_commander FROM battle EXCEPT SELECT T1.name ,  T1.result ,  T1.bulgarian_commander FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.location  =  'English Channel'
+Pred: SELECT battle.name, battle.result, battle.bulgarian_commander FROM battle WHERE NOT EXISTS (SELECT 1 FROM ship WHERE ship.lost_in_battle = battle.id AND ship.location = 'english channel');
+Error: 
+
+[MISMATCH] QID: 10000505
+Gold: SELECT name ,  RESULT ,  bulgarian_commander FROM battle EXCEPT SELECT T1.name ,  T1.result ,  T1.bulgarian_commander FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.location  =  'English Channel'
+Pred: SELECT name, result, bulgarian_commander FROM battle WHERE id NOT IN (SELECT lost_in_battle FROM ship WHERE location = 'english channel');
+Error: 
+
+[MISMATCH] QID: 10000505
+Gold: SELECT name ,  RESULT ,  bulgarian_commander FROM battle EXCEPT SELECT T1.name ,  T1.result ,  T1.bulgarian_commander FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.location  =  'English Channel'
+Pred: SELECT name, result, bulgarian_commander FROM battle WHERE NOT EXISTS (SELECT 1 FROM ship WHERE lost_in_battle = battle.id AND location = 'english channel');
+Error: 
+
+[MISMATCH] QID: 10000505
+Gold: SELECT name ,  RESULT ,  bulgarian_commander FROM battle EXCEPT SELECT T1.name ,  T1.result ,  T1.bulgarian_commander FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.location  =  'English Channel'
+Pred: SELECT name, result, bulgarian_commander FROM battle WHERE id NOT IN (SELECT lost_in_battle FROM ship WHERE location = 'english channel');
+Error: 
+
+[MISMATCH] QID: 10000505
+Gold: SELECT name ,  RESULT ,  bulgarian_commander FROM battle EXCEPT SELECT T1.name ,  T1.result ,  T1.bulgarian_commander FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.location  =  'English Channel'
+Pred: SELECT b.name, b.result, b.bulgarian_commander FROM battle b WHERE NOT EXISTS (SELECT 1 FROM ship s WHERE s.lost_in_battle = b.id AND s.location = 'english channel');
+Error: 
+
+[MISMATCH] QID: 10000505
+Gold: SELECT name ,  RESULT ,  bulgarian_commander FROM battle EXCEPT SELECT T1.name ,  T1.result ,  T1.bulgarian_commander FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.location  =  'English Channel'
+Pred: SELECT b.name, b.result, b.bulgarian_commander FROM battle b WHERE NOT EXISTS (SELECT 1 FROM ship s WHERE s.lost_in_battle = b.id AND s.location = 'english channel');
+Error: 
+
+[MISMATCH] QID: 10000505
+Gold: SELECT name ,  RESULT ,  bulgarian_commander FROM battle EXCEPT SELECT T1.name ,  T1.result ,  T1.bulgarian_commander FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.location  =  'English Channel'
+Pred: SELECT name, result, bulgarian_commander FROM battle WHERE NOT EXISTS (SELECT 1 FROM ship WHERE ship.lost_in_battle = battle.id AND ship.location = 'English Channel');
+Error: 
+
+[MISMATCH] QID: 10000505
+Gold: SELECT name ,  RESULT ,  bulgarian_commander FROM battle EXCEPT SELECT T1.name ,  T1.result ,  T1.bulgarian_commander FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.location  =  'English Channel'
+Pred: SELECT b.name, b.result, b.bulgarian_commander FROM battle b WHERE NOT EXISTS (SELECT 1 FROM ship s WHERE s.lost_in_battle = b.id AND s.location = 'English Channel');
+Error: 
+
+[MISMATCH] QID: 10000505
+Gold: SELECT name ,  RESULT ,  bulgarian_commander FROM battle EXCEPT SELECT T1.name ,  T1.result ,  T1.bulgarian_commander FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.location  =  'English Channel'
+Pred: SELECT name, result, bulgarian_commander FROM battle WHERE NOT EXISTS (SELECT 1 FROM ship WHERE ship.lost_in_battle = battle.id AND ship.location = 'English Channel');
+Error: Phase 1 (EN):  60%|██████    | 30/50 [1:11:06<40:43, 122.16s/it]Phase 1 (EN):  62%|██████▏   | 31/50 [1:14:49<48:11, 152.20s/it]Phase 1 (EN):  64%|██████▍   | 32/50 [1:16:46<42:32, 141.82s/it]Phase 1 (EN):  66%|██████▌   | 33/50 [1:18:28<36:49, 129.95s/it]
+
+[MISMATCH] QID: 10000645
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT Package_Option FROM TV_Channel WHERE NOT EXISTS (SELECT 1 FROM Cartoon WHERE Cartoon.Channel = TV_Channel.id AND Directed_by = 'ben jones');
+Error: 
+
+[MISMATCH] QID: 10000645
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT Package_Option FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'ben jones');
+Error: 
+
+[MISMATCH] QID: 10000645
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT Package_Option FROM TV_Channel t WHERE NOT EXISTS (SELECT 1 FROM Cartoon c WHERE c.Channel = t.id AND c.Directed_by = 'ben jones');
+Error: 
+
+[MISMATCH] QID: 10000645
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT Package_Option FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'ben jones');
+Error: 
+
+[MISMATCH] QID: 10000645
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT Package_Option FROM TV_Channel WHERE NOT EXISTS (SELECT 1 FROM Cartoon WHERE Cartoon.Channel = TV_Channel.id AND Directed_by = 'ben jones');
+Error: 
+
+[MISMATCH] QID: 10000645
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT Package_Option FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'ben jones');
+Error: 
+
+[MISMATCH] QID: 10000645
+Gold: SELECT package_option FROM TV_Channel WHERE id NOT IN (SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones')
+Pred: SELECT Package_Option FROM TV_Channel T WHERE NOT EXISTS (SELECT 1 FROM Cartoon C WHERE C.Channel = T.id AND C.Directed_by = 'Ben Jones');
+Error: 
+
+[MISMATCH] QID: 10000998
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT Professionals.first_name, Treatment_Types.treatment_type_description
+FROM Professionals
+JOIN Treatments ON Professionals.professional_id = Treatments.professional_id
+JOIN Treatment_Types ON Treatments.treatment_type_code = Treatment_Types.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000998
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description
+FROM Professionals p
+JOIN Treatments t ON p.professional_id = t.professional_id
+JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000998
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT Professionals.first_name, Treatment_Types.treatment_type_description
+FROM Professionals
+JOIN Treatments ON Professionals.professional_id = Treatments.professional_id
+JOIN Treatment_Types ON Treatments.treatment_type_code = Treatment_Types.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000998
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description
+FROM Professionals p
+JOIN Treatments t ON p.professional_id = t.professional_id
+JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000998
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description FROM Professionals p LEFT JOIN Treatments t ON p.professional_id = t.professional_id LEFT JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000998
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description
+FROM Professionals p
+JOIN Treatments t ON p.professional_id = t.professional_id
+JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000998
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT Professionals.first_name, Treatment_Types.treatment_type_description FROM Professionals JOIN Treatments ON Professionals.professional_id = Treatments.professional_id JOIN Treatment_Types ON Treatments.treatment_type_code = Treatment_Types.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000998
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT p.first_name, tt.treatment_type_description FROM Professionals p JOIN Treatments t ON p.professional_id = t.professional_id JOIN Treatment_Types tt ON t.treatment_type_code = tt.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000998
+Gold: SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code
+Pred: SELECT Professionals.first_name, Treatment_Types.treatment_type_description
+FROM Professionals
+JOIN Treatments ON Professionals.professional_id = Treatments.professional_id
+JOIN Treatment_Types ON Treatments.treatment_type_code = Treatment_Types.treatment_type_code;
+Error: 
+
+[MISMATCH] QID: 10000085
+Gold: select avg(age) from student where stuid not in (select stuid from has_pet)
+Pred: SELECT AVG(Age) FROM Student WHERE NOT EXISTS (SELECT 1 FROM Has_Pet WHERE Has_Pet.StuID = Student.StuID);
+Error: 
+
+[MISMATCH] QID: 10000820
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage WHERE Language = 'spanish');
+Error: 
+
+[MISMATCH] QID: 10000820
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language='spanish' AND Percentage=(SELECT MAX(Percentage) FROM countrylanguage WHERE Language='spanish');
+Error: 
+
+[MISMATCH] QID: 10000820
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'spanish' ORDER BY Percentage DESC LIMIT 1;
+Error: 
+
+[MISMATCH] QID: 10000820
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage WHERE Language = 'spanish')
+Error: 
+
+[MISMATCH] QID: 10000820
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage WHERE Language = 'spanish');
+Error: Phase 1 (EN):  68%|██████▊   | 34/50 [1:20:25<33:32, 125.81s/it]Phase 1 (EN):  70%|███████   | 35/50 [1:23:22<35:17, 141.19s/it]Phase 1 (EN):  72%|███████▏  | 36/50 [1:25:46<33:08, 142.06s/it]
+
+[MISMATCH] QID: 10000820
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage WHERE Language = 'spanish');
+Error: 
+
+[MISMATCH] QID: 10000820
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'Spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage WHERE Language = 'Spanish');
+Error: 
+
+[MISMATCH] QID: 10000820
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'Spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage WHERE Language = 'Spanish');
+Error: 
+
+[MISMATCH] QID: 10000820
+Gold: SELECT CountryCode ,  max(Percentage) FROM countrylanguage WHERE LANGUAGE  =  "Spanish" GROUP BY CountryCode
+Pred: SELECT CountryCode FROM countrylanguage WHERE Language = 'Spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage WHERE Language = 'Spanish');
+Error: 
+
+[MISMATCH] QID: 10000379
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT p1.Document_ID FROM Paragraphs p1 JOIN Paragraphs p2 ON p1.Document_ID = p2.Document_ID WHERE p1.Paragraph_Text = 'brazil' AND p2.Paragraph_Text = 'ireland';
+Error: 
+
+[MISMATCH] QID: 10000379
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text = 'brazil' INTERSECT SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text = 'ireland';
+Error: 
+
+[MISMATCH] QID: 10000379
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text IN ('brazil','ireland') GROUP BY Document_ID HAVING COUNT(DISTINCT Paragraph_Text) = 2;
+Error: 
+
+[MISMATCH] QID: 10000379
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text = 'brazil' INTERSECT SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text = 'ireland';
+Error: 
+
+[MISMATCH] QID: 10000379
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text = 'brazil' INTERSECT SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text = 'ireland'
+Error: 
+
+[MISMATCH] QID: 10000379
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text IN ('Brazil','Ireland') GROUP BY Document_ID HAVING COUNT(DISTINCT Paragraph_Text)=2;
+Error: 
+
+[MISMATCH] QID: 10000379
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text IN ('Brazil','Ireland') GROUP BY Document_ID HAVING COUNT(DISTINCT Paragraph_Text)=2;
+Error: 
+
+[MISMATCH] QID: 10000379
+Gold: SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland'
+Pred: SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text IN ('Brazil','Ireland') GROUP BY Document_ID HAVING COUNT(DISTINCT Paragraph_Text) = 2;
+Error: 
+
+[MISMATCH] QID: 10000700
+Gold: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Pred: SELECT DISTINCT a.area_code
+FROM AREA_CODE_STATE a
+JOIN VOTES v ON a.state = v.state
+JOIN CONTESTANTS c ON v.contestant_number = c.contestant_number
+WHERE c.contestant_name IN ('tabatha gehling', 'kelly clauss')
+GROUP BY v.phone_number, a.area_code
+HAVING COUNT(DISTINCT c.contestant_name) = 2
+Error: 
+
+[MISMATCH] QID: 10000700
+Gold: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Pred: SELECT acs.area_code FROM VOTES v JOIN AREA_CODE_STATE acs ON v.state = acs.state JOIN CONTESTANTS c ON v.contestant_number = c.contestant_number WHERE c.contestant_name = 'tabatha gehling' INTERSECT SELECT acs.area_code FROM VOTES v JOIN AREA_CODE_STATE acs ON v.state = acs.state JOIN CONTESTANTS c ON v.contestant_number = c.contestant_number WHERE c.contestant_name = 'kelly clauss'
+Error: 
+
+[MISMATCH] QID: 10000700
+Gold: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Pred: SELECT area_code FROM AREA_CODE_STATE WHERE state IN (SELECT v.state FROM VOTES v JOIN CONTESTANTS c ON v.contestant_number = c.contestant_number WHERE c.contestant_name = 'tabatha gehling') INTERSECT SELECT area_code FROM AREA_CODE_STATE WHERE state IN (SELECT v.state FROM VOTES v JOIN CONTESTANTS c ON v.contestant_number = c.contestant_number WHERE c.contestant_name = 'kelly clauss')
+Error: 
+
+[MISMATCH] QID: 10000700
+Gold: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Pred: SELECT DISTINCT a.area_code
+FROM AREA_CODE_STATE a
+JOIN VOTES v1 ON a.state = v1.state
+JOIN VOTES v2 ON a.state = v2.state AND v1.phone_number = v2.phone_number
+JOIN CONTESTANTS c1 ON v1.contestant_number = c1.contestant_number
+JOIN CONTESTANTS c2 ON v2.contestant_number = c2.contestant_number
+WHERE c1.contestant_name = 'tabatha gehling'
+AND c2.contestant_name = 'kelly clauss';
+Error: 
+
+[MISMATCH] QID: 10000700
+Gold: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Pred: SELECT DISTINCT acs.area_code FROM AREA_CODE_STATE acs JOIN VOTES v ON acs.state = v.state WHERE v.phone_number IN (SELECT phone_number FROM VOTES v2 JOIN CONTESTANTS c ON v2.contestant_number = c.contestant_number WHERE c.contestant_name IN ('tabatha gehling','kelly clauss') GROUP BY phone_number HAVING COUNT(DISTINCT c.contestant_name) = 2);
+Error: 
+
+[MISMATCH] QID: 10000700
+Gold: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Pred: SELECT DISTINCT area_code FROM (SELECT acs.area_code FROM VOTES v JOIN AREA_CODE_STATE acs ON v.state = acs.state JOIN CONTESTANTS c ON v.contestant_number = c.contestant_number WHERE c.contestant_name IN ('tabatha gehling','kelly clauss') GROUP BY acs.area_code, v.phone_number HAVING COUNT(DISTINCT c.contestant_name) = 2)
+Error: Phase 1 (EN):  74%|███████▍  | 37/50 [1:32:59<49:40, 229.29s/it]Phase 1 (EN):  76%|███████▌  | 38/50 [1:40:12<58:06, 290.56s/it]Phase 1 (EN):  78%|███████▊  | 39/50 [1:43:01<46:35, 254.16s/it]
+
+[MISMATCH] QID: 10000700
+Gold: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Pred: SELECT DISTINCT a.area_code
+FROM VOTES v
+JOIN AREA_CODE_STATE a ON v.state = a.state
+WHERE v.phone_number IN (
+  SELECT phone_number
+  FROM VOTES
+  JOIN CONTESTANTS ON VOTES.contestant_number = CONTESTANTS.contestant_number
+  WHERE CONTESTANTS.contestant_name IN ('Tabatha Gehling', 'Kelly Clauss')
+  GROUP BY phone_number
+  HAVING COUNT(DISTINCT VOTES.contestant_number) = 2
+);
+Error: 
+
+[MISMATCH] QID: 10000700
+Gold: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Pred: SELECT DISTINCT a.area_code FROM AREA_CODE_STATE a JOIN VOTES v ON a.state = v.state WHERE v.phone_number IN (SELECT phone_number FROM VOTES JOIN CONTESTANTS ON VOTES.contestant_number = CONTESTANTS.contestant_number WHERE CONTESTANTS.contestant_name = 'Tabatha Gehling' INTERSECT SELECT phone_number FROM VOTES JOIN CONTESTANTS ON VOTES.contestant_number = CONTESTANTS.contestant_number WHERE CONTESTANTS.contestant_name = 'Kelly Clauss');
+Error: 
+
+[MISMATCH] QID: 10000700
+Gold: SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Tabatha Gehling' INTERSECT SELECT T3.area_code FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number  =  T2.contestant_number JOIN area_code_state AS T3 ON T2.state  =  T3.state WHERE T1.contestant_name  =  'Kelly Clauss'
+Pred: SELECT DISTINCT a.area_code FROM VOTES v1 JOIN CONTESTANTS c1 ON v1.contestant_number = c1.contestant_number JOIN AREA_CODE_STATE a ON v1.state = a.state JOIN VOTES v2 ON v1.phone_number = v2.phone_number JOIN CONTESTANTS c2 ON v2.contestant_number = c2.contestant_number JOIN AREA_CODE_STATE a2 ON v2.state = a2.state WHERE c1.contestant_name = 'Tabatha Gehling' AND c2.contestant_name = 'Kelly Clauss' AND a.area_code = a2.area_code;
+Error: 
+
+[MISMATCH] QID: 10000177
+Gold: SELECT T1.countryId ,  T1.CountryName FROM Countries AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country GROUP BY T1.countryId HAVING count(*)  >  3 UNION SELECT T1.countryId ,  T1.CountryName FROM Countries AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country JOIN MODEL_LIST AS T3 ON T2.Id  =  T3.Maker WHERE T3.Model  =  'fiat';
+Pred: SELECT c.CountryId, c.CountryName
+FROM countries c
+JOIN car_makers m ON m.Country = c.CountryId
+GROUP BY c.CountryId, c.CountryName
+HAVING COUNT(*) > 3
+UNION
+SELECT c.CountryId, c.CountryName
+FROM countries c
+JOIN car_makers m ON m.Country = c.CountryId
+JOIN car_names n ON n.MakeId = m.Id
+WHERE n.Model = 'fiat';
+Error: 
+
+[MISMATCH] QID: 10000177
+Gold: SELECT T1.countryId ,  T1.CountryName FROM Countries AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country GROUP BY T1.countryId HAVING count(*)  >  3 UNION SELECT T1.countryId ,  T1.CountryName FROM Countries AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country JOIN MODEL_LIST AS T3 ON T2.Id  =  T3.Maker WHERE T3.Model  =  'fiat';
+Pred: SELECT c.CountryId, c.CountryName FROM countries c WHERE c.CountryId IN (SELECT Country FROM car_makers GROUP BY Country HAVING COUNT(*) > 3) OR c.CountryId IN (SELECT cm.Country FROM car_makers cm JOIN car_names cn ON cm.Id = cn.MakeId WHERE cn.Model = 'fiat');
+Error: 
+
+[MISMATCH] QID: 10000177
+Gold: SELECT T1.countryId ,  T1.CountryName FROM Countries AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country GROUP BY T1.countryId HAVING count(*)  >  3 UNION SELECT T1.countryId ,  T1.CountryName FROM Countries AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country JOIN MODEL_LIST AS T3 ON T2.Id  =  T3.Maker WHERE T3.Model  =  'fiat';
+Pred: SELECT c.CountryId, c.CountryName FROM countries c WHERE c.CountryId IN (SELECT Country FROM car_makers GROUP BY Country HAVING COUNT(*) > 3) OR c.CountryId IN (SELECT m.Country FROM car_makers m WHERE m.Id IN (SELECT MakeId FROM car_names WHERE Model = 'fiat'));
+Error: 
+
+[MISMATCH] QID: 10001032
+Gold: SELECT T2.property_type_description FROM Properties AS T1 JOIN Ref_Property_Types AS T2 ON T1.property_type_code  =  T2.property_type_code GROUP BY T1.property_type_code
+Pred: SELECT DISTINCT Ref_Property_Types.property_type_description FROM Ref_Property_Types JOIN Properties ON Ref_Property_Types.property_type_code = Properties.property_type_code;
+Error: 
+
+[MISMATCH] QID: 10001032
+Gold: SELECT T2.property_type_description FROM Properties AS T1 JOIN Ref_Property_Types AS T2 ON T1.property_type_code  =  T2.property_type_code GROUP BY T1.property_type_code
+Pred: SELECT DISTINCT Ref_Property_Types.property_type_description
+FROM Properties
+JOIN Ref_Property_Types ON Properties.property_type_code = Ref_Property_Types.property_type_code;
+Error: 
+
+[MISMATCH] QID: 10001032
+Gold: SELECT T2.property_type_description FROM Properties AS T1 JOIN Ref_Property_Types AS T2 ON T1.property_type_code  =  T2.property_type_code GROUP BY T1.property_type_code
+Pred: SELECT DISTINCT r.property_type_description FROM Ref_Property_Types r JOIN Properties p ON p.property_type_code = r.property_type_code;
+Error: 
+
+[MISMATCH] QID: 10001032
+Gold: SELECT T2.property_type_description FROM Properties AS T1 JOIN Ref_Property_Types AS T2 ON T1.property_type_code  =  T2.property_type_code GROUP BY T1.property_type_code
+Pred: SELECT DISTINCT r.property_type_description FROM Ref_Property_Types r JOIN Properties p ON p.property_type_code = r.property_type_code;
+Error: 
+
+[MISMATCH] QID: 10001032
+Gold: SELECT T2.property_type_description FROM Properties AS T1 JOIN Ref_Property_Types AS T2 ON T1.property_type_code  =  T2.property_type_code GROUP BY T1.property_type_code
+Pred: SELECT DISTINCT Ref_Property_Types.property_type_description FROM Ref_Property_Types JOIN Properties ON Properties.property_type_code = Ref_Property_Types.property_type_code;
+Error: 
+
+[MISMATCH] QID: 10001032
+Gold: SELECT T2.property_type_description FROM Properties AS T1 JOIN Ref_Property_Types AS T2 ON T1.property_type_code  =  T2.property_type_code GROUP BY T1.property_type_code
+Pred: SELECT DISTINCT Ref_Property_Types.property_type_description FROM Properties JOIN Ref_Property_Types ON Properties.property_type_code = Ref_Property_Types.property_type_code
+Error: 
+
+[MISMATCH] QID: 10001032
+Gold: SELECT T2.property_type_description FROM Properties AS T1 JOIN Ref_Property_Types AS T2 ON T1.property_type_code  =  T2.property_type_code GROUP BY T1.property_type_code
+Pred: SELECT DISTINCT Ref_Property_Types.property_type_description
+FROM Properties
+JOIN Ref_Property_Types ON Properties.property_type_code = Ref_Property_Types.property_type_code;
+Error: 
+
+[MISMATCH] QID: 10001032
+Gold: SELECT T2.property_type_description FROM Properties AS T1 JOIN Ref_Property_Types AS T2 ON T1.property_type_code  =  T2.property_type_code GROUP BY T1.property_type_code
+Pred: SELECT DISTINCT Ref_Property_Types.property_type_description FROM Ref_Property_Types JOIN Properties ON Properties.property_type_code = Ref_Property_Types.property_type_code;
+Error: 
+
+[MISMATCH] QID: 10001032
+Gold: SELECT T2.property_type_description FROM Properties AS T1 JOIN Ref_Property_Types AS T2 ON T1.property_type_code  =  T2.property_type_code GROUP BY T1.property_type_code
+Pred: SELECT DISTINCT Ref_Property_Types.property_type_description FROM Properties JOIN Ref_Property_Types ON Properties.property_type_code = Ref_Property_Types.property_type_code
+Error: 
+
+[MISMATCH] QID: 10000427
+Gold: SELECT count(*) FROM visitor WHERE id NOT IN (SELECT t2.visitor_id FROM museum AS t1 JOIN visit AS t2 ON t1.Museum_ID  =  t2.Museum_ID WHERE t1.open_year  >  2010)
+Pred: SELECT COUNT(*) FROM visitor v WHERE NOT EXISTS (SELECT 1 FROM visit ve JOIN museum m ON ve.Museum_ID = m.Museum_ID WHERE ve.visitor_ID = v.ID AND m.Open_Year > '2010');
+Error: Phase 1 (EN):  80%|████████  | 40/50 [1:46:04<38:47, 232.71s/it]Phase 1 (EN):  82%|████████▏ | 41/50 [1:47:24<28:01, 186.82s/it]Phase 1 (EN):  84%|████████▍ | 42/50 [1:49:56<23:31, 176.40s/it]Phase 1 (EN):  86%|████████▌ | 43/50 [1:52:02<18:50, 161.48s/it]Phase 1 (EN):  88%|████████▊ | 44/50 [1:54:38<15:57, 159.59s/it]Phase 1 (EN):  90%|█████████ | 45/50 [1:56:36<12:16, 147.32s/it]
+
+[MISMATCH] QID: 10000427
+Gold: SELECT count(*) FROM visitor WHERE id NOT IN (SELECT t2.visitor_id FROM museum AS t1 JOIN visit AS t2 ON t1.Museum_ID  =  t2.Museum_ID WHERE t1.open_year  >  2010)
+Pred: SELECT COUNT(*) FROM visitor WHERE NOT EXISTS (SELECT 1 FROM visit JOIN museum ON visit.Museum_ID = museum.Museum_ID WHERE visit.visitor_ID = visitor.ID AND CAST(museum.Open_Year AS INTEGER) > 2010);
+Error: 
+
+[MISMATCH] QID: 10000427
+Gold: SELECT count(*) FROM visitor WHERE id NOT IN (SELECT t2.visitor_id FROM museum AS t1 JOIN visit AS t2 ON t1.Museum_ID  =  t2.Museum_ID WHERE t1.open_year  >  2010)
+Pred: SELECT COUNT(*) FROM visitor WHERE NOT EXISTS (SELECT 1 FROM visit JOIN museum ON visit.Museum_ID = museum.Museum_ID WHERE visit.visitor_ID = visitor.ID AND museum.Open_Year > '2010')
+Error: 
+
+[MISMATCH] QID: 10000427
+Gold: SELECT count(*) FROM visitor WHERE id NOT IN (SELECT t2.visitor_id FROM museum AS t1 JOIN visit AS t2 ON t1.Museum_ID  =  t2.Museum_ID WHERE t1.open_year  >  2010)
+Pred: SELECT COUNT(*) FROM visitor v WHERE NOT EXISTS (SELECT 1 FROM visit vis JOIN museum m ON vis.Museum_ID = m.Museum_ID WHERE vis.visitor_ID = v.ID AND m.Open_Year > '2010')
+Error: 
+
+[MISMATCH] QID: 10000427
+Gold: SELECT count(*) FROM visitor WHERE id NOT IN (SELECT t2.visitor_id FROM museum AS t1 JOIN visit AS t2 ON t1.Museum_ID  =  t2.Museum_ID WHERE t1.open_year  >  2010)
+Pred: SELECT COUNT(*) FROM visitor v WHERE NOT EXISTS (SELECT 1 FROM visit vt JOIN museum m ON vt.Museum_ID = m.Museum_ID WHERE vt.visitor_ID = v.ID AND CAST(m.Open_Year AS INTEGER) > 2010);
+Error: 
+
+[MISMATCH] QID: 10001027
+Gold: SELECT Name FROM singer WHERE Singer_ID NOT IN (SELECT Singer_ID FROM song)
+Pred: SELECT Name FROM singer LEFT JOIN song ON singer.Singer_ID = song.Singer_ID WHERE song.Song_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10001027
+Gold: SELECT Name FROM singer WHERE Singer_ID NOT IN (SELECT Singer_ID FROM song)
+Pred: SELECT Name FROM singer LEFT JOIN song ON singer.Singer_ID = song.Singer_ID WHERE song.Singer_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10001027
+Gold: SELECT Name FROM singer WHERE Singer_ID NOT IN (SELECT Singer_ID FROM song)
+Pred: SELECT Name FROM singer LEFT JOIN song ON singer.Singer_ID = song.Singer_ID WHERE song.Song_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10001027
+Gold: SELECT Name FROM singer WHERE Singer_ID NOT IN (SELECT Singer_ID FROM song)
+Pred: SELECT singer.Name FROM singer LEFT JOIN song ON singer.Singer_ID = song.Singer_ID WHERE song.Singer_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10001027
+Gold: SELECT Name FROM singer WHERE Singer_ID NOT IN (SELECT Singer_ID FROM song)
+Pred: SELECT Name FROM singer LEFT JOIN song ON singer.Singer_ID = song.Singer_ID WHERE song.Singer_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10001027
+Gold: SELECT Name FROM singer WHERE Singer_ID NOT IN (SELECT Singer_ID FROM song)
+Pred: SELECT Name FROM singer LEFT JOIN song ON singer.Singer_ID = song.Singer_ID WHERE song.Song_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000256
+Gold: SELECT count(*) FROM Flights AS T1 JOIN Airports AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.city  =  "Aberdeen" OR T2.city  =  "Abilene"
+Pred: SELECT COUNT(*) FROM flights JOIN airports ON flights.DestAirport = airports.AirportCode WHERE airports.City IN ('aberdeen','abilene');
+Error: 
+
+[MISMATCH] QID: 10000256
+Gold: SELECT count(*) FROM Flights AS T1 JOIN Airports AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.city  =  "Aberdeen" OR T2.city  =  "Abilene"
+Pred: SELECT COUNT(*) FROM flights WHERE DestAirport IN (SELECT AirportCode FROM airports WHERE City IN ('aberdeen','abilene'));
+Error: 
+
+[MISMATCH] QID: 10000256
+Gold: SELECT count(*) FROM Flights AS T1 JOIN Airports AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.city  =  "Aberdeen" OR T2.city  =  "Abilene"
+Pred: SELECT COUNT(*) FROM flights WHERE DestAirport IN (SELECT AirportCode FROM airports WHERE City IN ('aberdeen','abilene'))
+Error: 
+
+[MISMATCH] QID: 10000256
+Gold: SELECT count(*) FROM Flights AS T1 JOIN Airports AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.city  =  "Aberdeen" OR T2.city  =  "Abilene"
+Pred: SELECT COUNT(*) FROM flights f JOIN airports a ON f.DestAirport = a.AirportCode WHERE a.City IN ('aberdeen','abilene');
+Error: 
+
+[MISMATCH] QID: 10000256
+Gold: SELECT count(*) FROM Flights AS T1 JOIN Airports AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.city  =  "Aberdeen" OR T2.city  =  "Abilene"
+Pred: SELECT COUNT(*) FROM flights JOIN airports ON flights.DestAirport = airports.AirportCode WHERE airports.City IN ('aberdeen','abilene');
+Error: 
+
+[MISMATCH] QID: 10000256
+Gold: SELECT count(*) FROM Flights AS T1 JOIN Airports AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.city  =  "Aberdeen" OR T2.city  =  "Abilene"
+Pred: SELECT COUNT(*) FROM flights WHERE DestAirport IN (SELECT AirportCode FROM airports WHERE City IN ('aberdeen','abilene'));
+Error: 
+
+[MISMATCH] QID: 10000256
+Gold: SELECT count(*) FROM Flights AS T1 JOIN Airports AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.city  =  "Aberdeen" OR T2.city  =  "Abilene"
+Pred: SELECT COUNT(*) FROM flights WHERE DestAirport IN (SELECT AirportCode FROM airports WHERE City IN ('Aberdeen','Abilene'));
+Error: 
+
+[MISMATCH] QID: 10000256
+Gold: SELECT count(*) FROM Flights AS T1 JOIN Airports AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.city  =  "Aberdeen" OR T2.city  =  "Abilene"
+Pred: SELECT COUNT(*) FROM flights WHERE DestAirport IN (SELECT AirportCode FROM airports WHERE City IN ('aberdeen','abilene'));
+Error: 
+
+[MISMATCH] QID: 10000256
+Gold: SELECT count(*) FROM Flights AS T1 JOIN Airports AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.city  =  "Aberdeen" OR T2.city  =  "Abilene"
+Pred: SELECT COUNT(*) FROM flights JOIN airports ON flights.DestAirport = airports.AirportCode WHERE airports.City IN ('aberdeen','abilene');
+Error: 
+
+[MISMATCH] QID: 10000684
+Gold: SELECT Name FROM people WHERE People_ID NOT IN (SELECT People_ID FROM poker_player)
+Pred: SELECT Name FROM people WHERE NOT EXISTS (SELECT 1 FROM poker_player WHERE poker_player.People_ID = people.People_ID);
+Error: 
+
+[MISMATCH] QID: 10000684
+Gold: SELECT Name FROM people WHERE People_ID NOT IN (SELECT People_ID FROM poker_player)
+Pred: SELECT Name FROM people LEFT JOIN poker_player ON people.People_ID = poker_player.People_ID WHERE poker_player.People_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000684
+Gold: SELECT Name FROM people WHERE People_ID NOT IN (SELECT People_ID FROM poker_player)
+Pred: SELECT Name FROM people WHERE NOT EXISTS (SELECT 1 FROM poker_player WHERE poker_player.People_ID = people.People_ID);
+Error: 
+
+[MISMATCH] QID: 10000684
+Gold: SELECT Name FROM people WHERE People_ID NOT IN (SELECT People_ID FROM poker_player)
+Pred: SELECT p.Name FROM people p LEFT JOIN poker_player pp ON p.People_ID = pp.People_ID WHERE pp.People_ID IS NULL;
+Error: 
+
+[MISMATCH] QID: 10000684
+Gold: SELECT Name FROM people WHERE People_ID NOT IN (SELECT People_ID FROM poker_player)
+Pred: SELECT Name FROM people WHERE NOT EXISTS (SELECT 1 FROM poker_player WHERE poker_player.People_ID = people.People_ID);
+Error: 
+
+[MISMATCH] QID: 10000859
+Gold: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format  =  "CD" OR Major_Record_Format  =  "DVD"
+Pred: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format IN ('cd','dvd');
+Error: 
+
+[MISMATCH] QID: 10000859
+Gold: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format  =  "CD" OR Major_Record_Format  =  "DVD"
+Pred: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format IN ('cd','dvd')
+Error: 
+
+[MISMATCH] QID: 10000859
+Gold: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format  =  "CD" OR Major_Record_Format  =  "DVD"
+Pred: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format IN ('cd','dvd');
+Error: 
+
+[MISMATCH] QID: 10000859
+Gold: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format  =  "CD" OR Major_Record_Format  =  "DVD"
+Pred: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format IN ('cd','dvd');
+Error: 
+
+[MISMATCH] QID: 10000859
+Gold: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format  =  "CD" OR Major_Record_Format  =  "DVD"
+Pred: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format IN ('cd','dvd');
+Error: 
+
+[MISMATCH] QID: 10000859
+Gold: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format  =  "CD" OR Major_Record_Format  =  "DVD"
+Pred: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format IN ('cd','dvd');
+Error: Phase 1 (EN):  92%|█████████▏| 46/50 [1:58:33<09:12, 138.15s/it]Phase 1 (EN):  94%|█████████▍| 47/50 [2:00:50<06:53, 137.74s/it]Phase 1 (EN):  96%|█████████▌| 48/50 [2:03:09<04:36, 138.16s/it]Phase 1 (EN):  98%|█████████▊| 49/50 [2:05:29<02:18, 138.74s/it]Phase 1 (EN): 100%|██████████| 50/50 [2:08:52<00:00, 157.97s/it]Phase 1 (EN): 100%|██████████| 50/50 [2:08:52<00:00, 154.65s/it]
+
+
+[MISMATCH] QID: 10000859
+Gold: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format  =  "CD" OR Major_Record_Format  =  "DVD"
+Pred: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format IN ('CD','DVD');
+Error: 
+
+[MISMATCH] QID: 10000859
+Gold: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format  =  "CD" OR Major_Record_Format  =  "DVD"
+Pred: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format IN ('cd', 'DVD');
+Error: 
+
+[MISMATCH] QID: 10000859
+Gold: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format  =  "CD" OR Major_Record_Format  =  "DVD"
+Pred: SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format IN ('CD','DVD');
+Error: 
+
+[MISMATCH] QID: 10000294
+Gold: SELECT district FROM shop WHERE Number_products  <  3000 INTERSECT SELECT district FROM shop WHERE Number_products  >  10000
+Pred: SELECT District FROM shop GROUP BY District HAVING SUM(Number_products < 3000) > 0 AND SUM(Number_products > 10000) > 0;
+Error: 
+
+[MISMATCH] QID: 10000504
+Gold: SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'Lettice' INTERSECT SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'HMS Atalanta'
+Pred: SELECT b.name, b.date FROM battle b JOIN ship s1 ON s1.lost_in_battle = b.id AND s1.name = 'lettice' JOIN ship s2 ON s2.lost_in_battle = b.id AND s2.name = 'hms atalanta'
+Error: 
+
+[MISMATCH] QID: 10000504
+Gold: SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'Lettice' INTERSECT SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'HMS Atalanta'
+Pred: SELECT DISTINCT b.name, b.date FROM battle b WHERE b.id IN (SELECT lost_in_battle FROM ship WHERE name = 'lettice') AND b.id IN (SELECT lost_in_battle FROM ship WHERE name = 'hms atalanta');
+Error: 
+
+[MISMATCH] QID: 10000504
+Gold: SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'Lettice' INTERSECT SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'HMS Atalanta'
+Pred: SELECT b.name, b.date FROM battle b WHERE EXISTS (SELECT 1 FROM ship s WHERE s.lost_in_battle = b.id AND s.name = 'lettice') AND EXISTS (SELECT 1 FROM ship s WHERE s.lost_in_battle = b.id AND s.name = 'hms atalanta');
+Error: 
+
+[MISMATCH] QID: 10000504
+Gold: SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'Lettice' INTERSECT SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'HMS Atalanta'
+Pred: SELECT b.name, b.date FROM battle b WHERE b.id IN (SELECT lost_in_battle FROM ship WHERE name = 'lettice') AND b.id IN (SELECT lost_in_battle FROM ship WHERE name = 'hms atalanta');
+Error: 
+
+[MISMATCH] QID: 10000504
+Gold: SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'Lettice' INTERSECT SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'HMS Atalanta'
+Pred: SELECT name, date FROM battle WHERE id IN (SELECT lost_in_battle FROM ship WHERE name = 'lettice') AND id IN (SELECT lost_in_battle FROM ship WHERE name = 'hms atalanta')
+Error: 
+
+[MISMATCH] QID: 10000504
+Gold: SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'Lettice' INTERSECT SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'HMS Atalanta'
+Pred: SELECT b.name, b.date FROM battle b WHERE b.id IN (SELECT lost_in_battle FROM ship WHERE name = 'lettice') AND b.id IN (SELECT lost_in_battle FROM ship WHERE name = 'hms atalanta');
+Error: 
+
+[MISMATCH] QID: 10000504
+Gold: SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'Lettice' INTERSECT SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'HMS Atalanta'
+Pred: SELECT b.name, b.date FROM battle b JOIN ship s1 ON s1.lost_in_battle = b.id JOIN ship s2 ON s2.lost_in_battle = b.id WHERE s1.name = 'Lettice' AND s2.name = 'hms atalanta'
+Error: 
+
+Phase 1 Results (English Execution Accuracy):
+config
+retrieval_bilingual_k3_vground    0.680000
+baseline                          0.580000
+retrieval_en_k3_fs                0.580000
+retrieval_en_k3_vals              0.580000
+retrieval_bilingual_k5            0.571429
+retrieval_en_k3_vground           0.571429
+retrieval_en_k3                   0.571429
+retrieval_bilingual_k3            0.560000
+retrieval_en_k5                   0.510204
+Name: exec_match, dtype: float64
+
+Selected Top configs for cross-lingual Phase 2: ['retrieval_bilingual_k3_vground', 'baseline', 'retrieval_bilingual_k5']
+
+--- Starting Phase 2: Evaluating Top configs on Bangla variants ---
+Phase 2 (Cross-Lingual):   0%|          | 0/50 [00:00<?, ?it/s]Phase 2 (Cross-Lingual):   2%|▏         | 1/50 [03:21<2:44:49, 201.83s/it]Phase 2 (Cross-Lingual):   4%|▍         | 2/50 [06:43<2:41:35, 201.99s/it]Phase 2 (Cross-Lingual):   6%|▌         | 3/50 [09:54<2:34:12, 196.86s/it]Phase 2 (Cross-Lingual):   8%|▊         | 4/50 [13:06<2:29:26, 194.92s/it]Phase 2 (Cross-Lingual):  10%|█         | 5/50 [14:40<1:58:51, 158.47s/it]Phase 2 (Cross-Lingual):  12%|█▏        | 6/50 [17:29<1:58:49, 162.04s/it]Phase 2 (Cross-Lingual):  14%|█▍        | 7/50 [19:41<1:49:07, 152.26s/it]Phase 2 (Cross-Lingual):  16%|█▌        | 8/50 [21:42<1:39:32, 142.21s/it]Phase 2 (Cross-Lingual):  18%|█▊        | 9/50 [24:26<1:41:57, 149.21s/it]Phase 2 (Cross-Lingual):  20%|██        | 10/50 [27:20<1:44:30, 156.76s/it]Phase 2 (Cross-Lingual):  22%|██▏       | 11/50 [31:12<1:56:55, 179.89s/it]Phase 2 (Cross-Lingual):  24%|██▍       | 12/50 [34:23<1:55:56, 183.05s/it]Phase 2 (Cross-Lingual):  26%|██▌       | 13/50 [37:02<1:48:26, 175.84s/it]Phase 2 (Cross-Lingual):  28%|██▊       | 14/50 [40:53<1:55:26, 192.40s/it]Phase 2 (Cross-Lingual):  30%|███       | 15/50 [43:27<1:45:33, 180.94s/it]Phase 2 (Cross-Lingual):  32%|███▏      | 16/50 [46:44<1:45:11, 185.64s/it]Phase 2 (Cross-Lingual):  34%|███▍      | 17/50 [50:21<1:47:20, 195.16s/it]Phase 2 (Cross-Lingual):  36%|███▌      | 18/50 [53:57<1:47:29, 201.54s/it]Phase 2 (Cross-Lingual):  38%|███▊      | 19/50 [58:09<1:51:56, 216.65s/it]Phase 2 (Cross-Lingual):  40%|████      | 20/50 [59:33<1:28:26, 176.89s/it]Phase 2 (Cross-Lingual):  42%|████▏     | 21/50 [1:03:07<1:30:46, 187.82s/it]Phase 2 (Cross-Lingual):  44%|████▍     | 22/50 [1:06:28<1:29:35, 191.98s/it]Phase 2 (Cross-Lingual):  46%|████▌     | 23/50 [1:10:09<1:30:18, 200.67s/it]Phase 2 (Cross-Lingual):  48%|████▊     | 24/50 [1:12:28<1:18:56, 182.17s/it]Phase 2 (Cross-Lingual):  50%|█████     | 25/50 [1:13:51<1:03:30, 152.42s/it]Phase 2 (Cross-Lingual):  52%|█████▏    | 26/50 [1:16:38<1:02:44, 156.87s/it]Phase 2 (Cross-Lingual):  54%|█████▍    | 27/50 [1:17:55<50:56, 132.87s/it]  Phase 2 (Cross-Lingual):  56%|█████▌    | 28/50 [1:19:33<44:51, 122.32s/it]Phase 2 (Cross-Lingual):  58%|█████▊    | 29/50 [1:22:44<50:00, 142.90s/it]Phase 2 (Cross-Lingual):  60%|██████    | 30/50 [1:25:35<50:28, 151.42s/it]Phase 2 (Cross-Lingual):  62%|██████▏   | 31/50 [1:29:17<54:40, 172.64s/it]Phase 2 (Cross-Lingual):  64%|██████▍   | 32/50 [1:32:27<53:18, 177.71s/it]Phase 2 (Cross-Lingual):  66%|██████▌   | 33/50 [1:34:56<47:55, 169.16s/it]Phase 2 (Cross-Lingual):  68%|██████▊   | 34/50 [1:38:26<48:21, 181.37s/it]Phase 2 (Cross-Lingual):  70%|███████   | 35/50 [1:40:44<42:07, 168.50s/it]Phase 2 (Cross-Lingual):  72%|███████▏  | 36/50 [1:44:24<42:52, 183.72s/it]Phase 2 (Cross-Lingual):  74%|███████▍  | 37/50 [1:48:18<43:04, 198.83s/it]Phase 2 (Cross-Lingual):  76%|███████▌  | 38/50 [1:52:43<43:43, 218.59s/it]Phase 2 (Cross-Lingual):  78%|███████▊  | 39/50 [1:56:15<39:43, 216.66s/it]Phase 2 (Cross-Lingual):  80%|████████  | 40/50 [1:59:22<34:38, 207.85s/it]Phase 2 (Cross-Lingual):  82%|████████▏ | 41/50 [2:01:10<26:40, 177.78s/it]Phase 2 (Cross-Lingual):  84%|████████▍ | 42/50 [2:03:29<22:09, 166.16s/it]Phase 2 (Cross-Lingual):  86%|████████▌ | 43/50 [2:06:05<19:03, 163.32s/it]Phase 2 (Cross-Lingual):  88%|████████▊ | 44/50 [2:08:57<16:34, 165.75s/it]Phase 2 (Cross-Lingual):  90%|█████████ | 45/50 [2:11:03<12:50, 154.01s/it]Phase 2 (Cross-Lingual):  92%|█████████▏| 46/50 [2:13:08<09:41, 145.33s/it]Phase 2 (Cross-Lingual):  94%|█████████▍| 47/50 [2:15:08<06:52, 137.63s/it]Phase 2 (Cross-Lingual):  96%|█████████▌| 48/50 [2:19:06<05:35, 167.70s/it]Phase 2 (Cross-Lingual):  98%|█████████▊| 49/50 [2:21:21<02:37, 157.80s/it]Phase 2 (Cross-Lingual): 100%|██████████| 50/50 [2:24:36<00:00, 169.07s/it]Phase 2 (Cross-Lingual): 100%|██████████| 50/50 [2:24:36<00:00, 173.53s/it]
+
+Rate limit hit. Retrying in 5s... (Attempt 1/6)
+
+Rate limit hit. Retrying in 10s... (Attempt 2/6)
+
+Rate limit hit. Retrying in 20s... (Attempt 3/6)
+
+Evaluation complete. Results saved to /home/sagar/Downloads/MSc/CSE505/Project/artifacts/spider_eval_results_local_deepseek.csv
+[OK] cell 29 (16423s)
+evaluable questions: 50  (gold_ok=100.00%)
+
+=== Spider EX / EM + project.md metrics, by config x language ===
+                                           exec_acc  em_acc  valid_rate  table_recall  table_exact  col_recall  col_recall_pred   n
+config                         lang                                                                                                
+baseline                       banglish      0.4600  0.2800        1.00        1.0000       0.0800      1.0000           0.9303  50
+                               bn            0.6600  0.3000        1.00        1.0000       0.0800      1.0000           0.9803  50
+                               code_mixed    0.5600  0.3400        0.98        1.0000       0.0800      1.0000           0.9283  50
+                               en            0.5800  0.3400        1.00        1.0000       0.0800      1.0000           0.9784  50
+retrieval_bilingual_k3         en            0.5600  0.2400        1.00        0.9833       0.1400      0.9863           0.9744  50
+retrieval_bilingual_k3_vground banglish      0.4000  0.2600        1.00        0.9333       0.1000      0.9352           0.8969  50
+                               bn            0.5000  0.3200        1.00        0.9867       0.1200      0.9886           0.9512  50
+                               code_mixed    0.6200  0.3200        1.00        0.9867       0.1200      0.9886           0.9798  50
+                               en            0.6800  0.3400        1.00        0.9833       0.1400      0.9863           0.9744  50
+retrieval_bilingual_k5         banglish      0.4400  0.2400        1.00        0.9733       0.0800      0.9733           0.9150  50
+                               bn            0.4000  0.2800        1.00        1.0000       0.0800      1.0000           0.9883  50
+                               code_mixed    0.5400  0.3000        1.00        1.0000       0.0800      1.0000           0.9883  50
+                               en            0.5714  0.3469        1.00        1.0000       0.0816      1.0000           0.9949  49
+retrieval_en_k3                en            0.5714  0.2245        1.00        0.9864       0.1224      0.9883           0.9949  49
+retrieval_en_k3_fs             en            0.5800  0.3000        1.00        0.9867       0.1200      0.9886           0.9864  50
+retrieval_en_k3_vals           en            0.5800  0.3000        1.00        0.9867       0.1200      0.9886           0.9779  50
+retrieval_en_k3_vground        en            0.5714  0.2449        1.00        0.9864       0.1224      0.9883           0.9774  49
+retrieval_en_k5                en            0.5102  0.2857        1.00        1.0000       0.0816      1.0000           0.9949  49
+
+=== EX by SQL complexity, per config ===
+config                          complexity
+baseline                        easy          0.8056
+                                extra         0.3750
+                                hard          0.5300
+                                medium        0.5000
+retrieval_bilingual_k3          easy          0.8889
+                                extra         0.0000
+                                hard          0.5200
+                                medium        0.5000
+retrieval_bilingual_k3_vground  easy          0.7500
+                                extra         0.5000
+                                hard          0.5600
+                                medium        0.4107
+retrieval_bilingual_k5          easy          0.7500
+                                extra         0.2500
+                                hard          0.4343
+                                medium        0.4464
+retrieval_en_k3                 easy          0.8750
+                                extra         0.5000
+                                hard          0.5600
+                                medium        0.4286
+retrieval_en_k3_fs              easy          0.8889
+                                extra         0.5000
+                                hard          0.5600
+                                medium        0.4286
+retrieval_en_k3_vals            easy          0.8889
+                                extra         0.0000
+                                hard          0.5200
+                                medium        0.5714
+retrieval_en_k3_vground         easy          0.7500
+                                extra         0.0000
+                                hard          0.6400
+                                medium        0.4286
+retrieval_en_k5                 easy          0.7500
+                                extra         0.0000
+                                hard          0.5200
+                                medium        0.4286
+
+=== EM by SQL complexity, per config ===
+config                          complexity
+baseline                        easy          0.7222
+                                extra         0.1250
+                                hard          0.2800
+                                medium        0.1429
+retrieval_bilingual_k3          easy          0.6667
+                                extra         0.0000
+                                hard          0.2400
+                                medium        0.0000
+retrieval_bilingual_k3_vground  easy          0.5833
+                                extra         0.2500
+                                hard          0.3100
+                                medium        0.1429
+retrieval_bilingual_k5          easy          0.5833
+                                extra         0.0000
+                                hard          0.2626
+                                medium        0.1964
+retrieval_en_k3                 easy          0.6250
+                                extra         0.5000
+                                hard          0.2000
+                                medium        0.0000
+retrieval_en_k3_fs              easy          0.6667
+                                extra         0.5000
+                                hard          0.3200
+                                medium        0.0000
+retrieval_en_k3_vals            easy          0.6667
+                                extra         0.0000
+                                hard          0.3200
+                                medium        0.0714
+retrieval_en_k3_vground         easy          0.6250
+                                extra         0.0000
+                                hard          0.2400
+                                medium        0.0714
+retrieval_en_k5                 easy          0.6250
+                                extra         0.0000
+                                hard          0.2800
+                                medium        0.1429
+[OK] cell 31 (16423s)
+
+=== Multilingual Performance Gap Analysis & Statistical Significance (EX) ===
+                                en_acc  bn_acc  banglish_acc  code_mixed_acc  gap (en - bn)  gap (en - banglish)  gap (en - code_mixed)
+config                                                                                                                                 
+baseline                        0.5800    0.66          0.46            0.56        -0.0800               0.1200                 0.0200
+retrieval_bilingual_k3          0.5600     NaN           NaN             NaN            NaN                  NaN                    NaN
+retrieval_bilingual_k3_vground  0.6800    0.50          0.40            0.62         0.1800               0.2800                 0.0600
+retrieval_bilingual_k5          0.5714    0.40          0.44            0.54         0.1714               0.1314                 0.0314
+retrieval_en_k3                 0.5714     NaN           NaN             NaN            NaN                  NaN                    NaN
+retrieval_en_k3_fs              0.5800     NaN           NaN             NaN            NaN                  NaN                    NaN
+retrieval_en_k3_vals            0.5800     NaN           NaN             NaN            NaN                  NaN                    NaN
+retrieval_en_k3_vground         0.5714     NaN           NaN             NaN            NaN                  NaN                    NaN
+retrieval_en_k5                 0.5102     NaN           NaN             NaN            NaN                  NaN                    NaN
+
+Smaller gaps with retrieval indicate that context helps recover multilingual translation losses.
+
+=== Statistical Significance (McNemar's Test) ===
+Null Hypothesis: No significant difference in performance between English and the target language.
+
+Config: baseline
+  EN vs BN: p-value = 0.3438 (Not Significant)
+  EN vs BANGLISH: p-value = 0.1796 (Not Significant)
+  EN vs CODE_MIXED: p-value = 1.0000 (Not Significant)
+
+Config: retrieval_en_k3
+
+Config: retrieval_en_k5
+
+Config: retrieval_bilingual_k3
+
+Config: retrieval_bilingual_k5
+  EN vs BN: p-value = 0.0352 (Significant)
+  EN vs BANGLISH: p-value = 0.0923 (Not Significant)
+  EN vs CODE_MIXED: p-value = 0.7744 (Not Significant)
+
+Config: retrieval_en_k3_fs
+
+Config: retrieval_en_k3_vals
+
+Config: retrieval_en_k3_vground
+
+Config: retrieval_bilingual_k3_vground
+  EN vs BN: p-value = 0.0117 (Significant)
+  EN vs BANGLISH: p-value = 0.0013 (Significant)
+  EN vs CODE_MIXED: p-value = 0.5078 (Not Significant)
+
+=== consistency across the 4 language variants, per config ===
+                                full_consistency  mean_correct  pairwise_agreement
+config                                                                            
+baseline                                  0.2400        2.2600              0.7233
+retrieval_bilingual_k3                    0.5600        0.5600              0.0000
+retrieval_bilingual_k3_vground            0.3000        2.2000              0.7400
+retrieval_bilingual_k5                    0.2400        1.9400              0.7400
+retrieval_en_k3                           0.5714        0.5714              0.0000
+retrieval_en_k3_fs                        0.5800        0.5800              0.0000
+retrieval_en_k3_vals                      0.5800        0.5800              0.0000
+retrieval_en_k3_vground                   0.5714        0.5714              0.0000
+retrieval_en_k5                           0.5102        0.5102              0.0000
+[OK] cell 32 (16423s)
+=== Error Categorization ===
+error_category                             Logic/Semantic Error (Valid SQL but wrong result)  Syntax Error
+config                         lang                                                                       
+baseline                       banglish                                                   27             0
+                               bn                                                         17             0
+                               code_mixed                                                 21             1
+                               en                                                         21             0
+retrieval_bilingual_k3         en                                                         22             0
+retrieval_bilingual_k3_vground banglish                                                   30             0
+                               bn                                                         25             0
+                               code_mixed                                                 19             0
+                               en                                                         16             0
+retrieval_bilingual_k5         banglish                                                   28             0
+                               bn                                                         30             0
+                               code_mixed                                                 23             0
+                               en                                                         21             0
+retrieval_en_k3                en                                                         21             0
+retrieval_en_k3_fs             en                                                         21             0
+retrieval_en_k3_vals           en                                                         21             0
+retrieval_en_k3_vground        en                                                         21             0
+retrieval_en_k5                en                                                         24             0
+[OK] cell 34 (16423s)
+dev questions evaluated: 50 / 1034  dbs with >=1 sample question: 20 / 20
+                       db_id  total  covered  coverage
+      real_estate_properties      4        2    0.5000
+                battle_death     16        3    0.1875
+                     voter_1     15        2    0.1333
+                museum_visit     18        2    0.1111
+                course_teach     30        3    0.1000
+                      singer     30        3    0.1000
+    employee_hire_evaluation     38        3    0.0789
+                poker_player     40        3    0.0750
+                   orchestra     40        3    0.0750
+                   network_1     56        3    0.0536
+                       wta_1     62        3    0.0484
+                      pets_1     42        2    0.0476
+              concert_singer     45        2    0.0444
+student_transcripts_tracking     78        3    0.0385
+                    flight_2     80        3    0.0375
+                      tvshow     62        2    0.0323
+                 dog_kennels     82        2    0.0244
+        cre_Doc_Template_Mgt     84        2    0.0238
+                       car_1     92        2    0.0217
+                     world_1    120        2    0.0167
+[OK] cell 36 (16423s)
+ALL CELLS OK in 16423s
